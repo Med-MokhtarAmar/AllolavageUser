@@ -26,17 +26,17 @@ class ConfirmationScreen extends StatelessWidget {
         backgroundColor: const Color.fromARGB(220, 35, 102, 195),
         shadowColor: Colors.black,
         elevation: 10,
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: Color(0xF1FFFFFF)),
-          onPressed: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => WashScreen(nom: '', matricule: '', tel: '', taille: ''),
-              ),
-            );
-          },
-        ),
+        // leading: IconButton(
+        //   icon: Icon(Icons.arrow_back, color: Color(0xF1FFFFFF)),
+        //   onPressed: () {
+        //     Navigator.push(
+        //       context,
+        //       MaterialPageRoute(
+        //         builder: (context) => WashScreen(nom: '', matricule: '', tel: '', taille: ''),
+        //       ),
+        //     );
+        //   },
+        // ),
       ),
       body: SingleChildScrollView(
         child: Padding(

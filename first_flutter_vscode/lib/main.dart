@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'screens/welcome_screen.dart';
 
 void main() {
@@ -8,7 +9,7 @@ void main() {
 class AlloLavageApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return GetMaterialApp(
       debugShowCheckedModeBanner: false, // Cache le bandeau "Debug"
       title: 'Allo Lavage',
       theme: ThemeData(

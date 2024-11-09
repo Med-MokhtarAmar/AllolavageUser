@@ -1,4 +1,6 @@
+import 'package:first_flutter_vscode/servicesControllers/CarsController.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import '../home/home_screen.dart';
 // import 'package:intl/intl.dart';
 // import 'ConfirmationScreen.dart';
@@ -13,81 +15,139 @@ class CarScreen extends StatefulWidget {
 class _CarScreenState extends State<CarScreen> {
   final _formKey = GlobalKey<FormState>();
 
-  List<Map<String, String>> carList = [ ];
+  List<Map<String, String>> carList = [];
+  final Carscontroller carsController = Get.put(Carscontroller());
 
   String carName = '';
   String carSize = 'Milieu';
   String carPlate = '';
   String phoneNumber = '';
 
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        
         title: Text('Ma Voiture'),
-        backgroundColor:  Color.fromARGB(220, 35, 102, 195),
+        backgroundColor: Color.fromARGB(220, 35, 102, 195),
         shadowColor: Colors.black,
         elevation: 10,
         titleTextStyle: TextStyle(color: Color(0xF1FFFFFF), fontSize: 18),
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: Color(0xF1FFFFFF)),
-          onPressed: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => HomeScreen()),
-            );
-          },
-        ),
+        // leading: IconButton(
+        //   icon: Icon(Icons.arrow_back, color: Color(0xF1FFFFFF)),
+        //   onPressed: () {
+        //     Navigator.push(
+        //       context,
+        //       MaterialPageRoute(builder: (context) => HomeScreen()),
+        //     );
+        //   },
+        // ),
       ),
-
-      body: Column( 
+      body: Column(
         children: [
-          SizedBox(height: 20), 
+          SizedBox(height: 20),
           Expanded(
-            child: carList.isEmpty
-                ? Center(child: Text('Aucune voiture ajoutée'))
-                : ListView.builder(
-                    itemCount: carList.length,
-                    itemBuilder: (context, index) {
-                      final car = carList[index];
+            child: GetBuilder<Carscontroller>(builder: (controller) {
+              // Check if the data is available
+              if (controller.mycars.isEmpty) {
+                return Center(
+                    child:
+                        CircularProgressIndicator()); // Show loading spinner while waiting for data
+              } else {
+                return ListView.builder(
+                  itemCount: carsController.mycars.length,
+                  itemBuilder: (context, index) {
+                    final car = carsController.mycars[index];
 
-                      return GestureDetector(
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(builder: (context) => WashScreen(nom: car['name'] ?? '',
-                            matricule:car['plate']?? '' ,tel: car['phone'] ?? '' , taille: car['size'] ?? '')),
-                            
-                          );
-                        },
-                        
-                        child: Card(
-                          color: Color.fromARGB(255, 239, 239, 249),
-                          margin: EdgeInsets.symmetric(horizontal: 15, vertical: 5),
-                          elevation: 10,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                          child: ListTile(
-                            leading: CircleAvatar(
-                              backgroundColor: Colors.blueAccent,
-                              child: Text(car['size']![0],style: TextStyle(color: Color.fromARGB(238, 129, 1, 164))), // Première lettre de la taille
-                            ),
-                            title: Text(car['name'] ?? '',style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold,
-                            ), ),
-                            subtitle: Text(car['plate'] ?? '',style: TextStyle(color: Colors.green),),
-                            trailing: Text(car['phone'] ?? '',style: TextStyle(color: Color.fromARGB(238, 129, 1, 164))),
-                          ),
+                    return GestureDetector(
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => WashScreen(
+                                  nom: car['mark'] ?? '',
+                                  matricule: car['Numero'] ?? '',
+                                  tel: car['phone'] ?? 'dont forget..',
+                                  taille: car['size'] ?? '')),
+                        );
+                      },
+                      child: Card(
+                        color: Color.fromARGB(255, 239, 239, 249),
+                        margin:
+                            EdgeInsets.symmetric(horizontal: 15, vertical: 5),
+                        elevation: 10,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10),
                         ),
-                      );
-                    },
-                  ),
+                        child: ListTile(
+                          leading: CircleAvatar(
+                            backgroundColor: Colors.blueAccent,
+                            child: Text(car['size'],
+                                style: TextStyle(
+                                    color: Color.fromARGB(238, 129, 1,
+                                        164))), // Première lettre de la taille
+                          ),
+                          title: Text(
+                            car['mark'] ?? '',
+                            style: TextStyle(
+                              fontSize: 15,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          subtitle: Text(
+                            car['Numero'] ?? '',
+                            style: TextStyle(color: Colors.green),
+                          ),
+                          trailing: Text(car['phone'] ?? '',
+                              style: TextStyle(
+                                  color: Color.fromARGB(238, 129, 1, 164))),
+                        ),
+                      ),
+                    );
+                  },
+                );
+              }
+            }),
+
+            //  ListView.builder(
+            //     itemCount: carList.length,
+            //     itemBuilder: (context, index) {
+            //       final car = carList[index];
+
+            //       return GestureDetector(
+            //         onTap: () {
+            //           Navigator.push(
+            //             context,
+            //             MaterialPageRoute(builder: (context) => WashScreen(nom: car['name'] ?? '',
+            //             matricule:car['plate']?? '' ,tel: car['phone'] ?? '' , taille: car['size'] ?? '')),
+
+            //           );
+            //         },
+
+            //         child: Card(
+            //           color: Color.fromARGB(255, 239, 239, 249),
+            //           margin: EdgeInsets.symmetric(horizontal: 15, vertical: 5),
+            //           elevation: 10,
+            //           shape: RoundedRectangleBorder(
+            //             borderRadius: BorderRadius.circular(10),
+            //           ),
+            //           child: ListTile(
+            //             leading: CircleAvatar(
+            //               backgroundColor: Colors.blueAccent,
+            //               child: Text(car['size']![0],style: TextStyle(color: Color.fromARGB(238, 129, 1, 164))), // Première lettre de la taille
+            //             ),
+            //             title: Text(car['name'] ?? '',style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold,
+            //             ), ),
+            //             subtitle: Text(car['plate'] ?? '',style: TextStyle(color: Colors.green),),
+            //             trailing: Text(car['phone'] ?? '',style: TextStyle(color: Color.fromARGB(238, 129, 1, 164))),
+            //           ),
+            //         ),
+            //       );
+            //     },
+            //   ),
           ),
         ],
       ),
-
-
       floatingActionButton: Padding(
         padding: const EdgeInsets.only(bottom: 10.0),
         child: FloatingActionButton(
@@ -119,7 +179,8 @@ class _CarScreenState extends State<CarScreen> {
                             ),
                             keyboardType: TextInputType.phone,
                             maxLength: 8,
-                            autovalidateMode: AutovalidateMode.onUserInteraction,
+                            autovalidateMode:
+                                AutovalidateMode.onUserInteraction,
                             validator: (value) {
                               if (value!.isEmpty || value.length != 8) {
                                 return 'Entrez un numéro de téléphone';
@@ -139,7 +200,8 @@ class _CarScreenState extends State<CarScreen> {
                                 color: Color.fromARGB(238, 129, 1, 164),
                               ),
                             ),
-                            autovalidateMode: AutovalidateMode.onUserInteraction,
+                            autovalidateMode:
+                                AutovalidateMode.onUserInteraction,
                             validator: (value) {
                               if (value!.isEmpty) {
                                 return 'Veuillez entrer le nom de la voiture';
@@ -177,12 +239,12 @@ class _CarScreenState extends State<CarScreen> {
                               labelText: 'Matricule de la voiture',
                               prefixIcon: Icon(
                                 Icons.confirmation_number,
-
                                 color: Color.fromARGB(238, 129, 1, 164),
                               ),
                             ),
                             maxLength: 8,
-                            autovalidateMode: AutovalidateMode.onUserInteraction,
+                            autovalidateMode:
+                                AutovalidateMode.onUserInteraction,
                             validator: (value) {
                               if (value!.isEmpty || value.length != 8) {
                                 return 'Entrez Matricule de la voiture';
@@ -201,14 +263,16 @@ class _CarScreenState extends State<CarScreen> {
                   actions: [
                     TextButton(
                       onPressed: () {
-                        Navigator.of(context).pop(); // Ferme la boîte de dialogue
+                        Navigator.of(context)
+                            .pop(); // Ferme la boîte de dialogue
                       },
                       child: Text('Annuler'),
                     ),
                     TextButton(
                       onPressed: () {
                         if (_formKey.currentState!.validate()) {
-                          _formKey.currentState!.save(); // Sauvegarde les champs du formulaire
+                          _formKey.currentState!
+                              .save(); // Sauvegarde les champs du formulaire
 
                           setState(() {
                             carList.add({
@@ -219,7 +283,8 @@ class _CarScreenState extends State<CarScreen> {
                             });
                           });
 
-                          Navigator.of(context).pop(); // Ferme la boîte de dialogue
+                          Navigator.of(context)
+                              .pop(); // Ferme la boîte de dialogue
                         }
                       },
                       child: Text('Enregistrer'),
