@@ -120,12 +120,12 @@ class _CarScreenState extends State<CarScreen> {
                             keyboardType: TextInputType.phone,
                             maxLength: 8,
                             autovalidateMode: AutovalidateMode.onUserInteraction,
-                            validator: (value) {
-                              if (value!.isEmpty || value.length != 8) {
-                                return 'Entrez un numéro de téléphone';
-                              }
-                              return null;
-                            },
+                            // validator: (value) {
+                            //   if (value!.isEmpty || value.length != 8) {
+                            //     return 'Entrez un numéro de téléphone';
+                            //   }
+                            //   return null;
+                            // },
                             onSaved: (value) {
                               phoneNumber = value!;
                             },
@@ -183,12 +183,12 @@ class _CarScreenState extends State<CarScreen> {
                             ),
                             maxLength: 8,
                             autovalidateMode: AutovalidateMode.onUserInteraction,
-                            validator: (value) {
-                              if (value!.isEmpty || value.length != 8) {
-                                return 'Entrez Matricule de la voiture';
-                              }
-                              return null;
-                            },
+                            // validator: (value) {
+                            //   if (value!.isEmpty || value.length != 8) {
+                            //     return 'Entrez Matricule de la voiture';
+                            //   }
+                            //   return null;
+                            // },
                             onSaved: (value) {
                               carPlate = value!;
                             },

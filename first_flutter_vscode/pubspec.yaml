@@ -64,6 +64,8 @@ flutter:
     - images/logo.png
     - images/lavage3.jpg
     - images/lavage4.jpg
+    - images/assets/logo.png
+
   # - images/lavage3.jpg
 
   # An image asset can refer to one or more resolution-specific "variants", see

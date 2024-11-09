@@ -33,7 +33,7 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text('Créer un compte',style: TextStyle(color: Colors.white)),
-        backgroundColor: const  Color.fromARGB(220, 35, 102, 195),
+        backgroundColor: Color.fromARGB(249, 58, 166, 237),
         shadowColor: Colors.black,
         elevation: 10,
         leading: IconButton( // Utilisez 'leading' avec IconButton pour gérer le retour
@@ -141,7 +141,7 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
                 child: Text('Inscription'),
                 style: ElevatedButton.styleFrom(
                   padding: EdgeInsets.symmetric(horizontal: 100, vertical: 18),
-                  backgroundColor: const Color.fromARGB(220, 35, 102, 195),
+                  backgroundColor: Color.fromARGB(249, 58, 166, 237),
                   foregroundColor: Colors.white,
                   textStyle: TextStyle(fontSize: 16),
                   shadowColor: Colors.black,

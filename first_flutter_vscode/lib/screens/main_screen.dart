@@ -3,7 +3,8 @@ import 'home/home_screen.dart';
 import 'voiture/car_screen.dart';
 // import 'wash_screen.dart';
 import 'demande/reservation_screen.dart';
-import 'page/profile_screen.dart'; 
+import 'page/profile_screen.dart';
+
 
 
 
@@ -22,7 +23,7 @@ class _MainScreenState extends State<MainScreen> {
     CarScreen(),
     // WashScreen(),
     ReservationScreen(),
-    ProfileScreen(),
+    ProfilePage(),
   ];
 
   void _onItemTapped(int index) {

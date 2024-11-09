@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'create_account_screen.dart';
+import 'home/home_screen.dart';
 
 class WelcomeScreen extends StatelessWidget {
   @override
@@ -44,12 +45,36 @@ class WelcomeScreen extends StatelessWidget {
             SizedBox(height: 2),
             Center(
               child: Text(
-                'En vous inscrivant sur Allo Lavage, vous acceptez la Politique de Confidentialité !',
+                'Le service "Allo Lavage" offre un service de lavage de voiture mobile de haute qualité'
+                ' nous nous déplaçons chez vous que ce soit à votre domicile ou sur votre lieu de travail.',
                 style: disclaimerStyle,
                 textAlign: TextAlign.center,
               ),
             ),
             SizedBox(height: 30),
+
+            ElevatedButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => HomeScreen()),
+                );
+              },
+              child: Text('Se connecter'),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Color.fromARGB(220, 35, 102, 195),
+                foregroundColor: Colors.white,
+                padding: EdgeInsets.symmetric(horizontal: 70, vertical: 18),
+                textStyle: TextStyle(fontSize: 16),
+                shadowColor: Colors.black,
+                elevation: 15,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(30),
+                ),
+              ),
+            ),
+            SizedBox(height: 15),
+
             ElevatedButton(
               onPressed: () {
                 Navigator.push(
@@ -59,17 +84,19 @@ class WelcomeScreen extends StatelessWidget {
               },
               child: Text('Créer un compte'),
               style: ElevatedButton.styleFrom(
-                backgroundColor: Color.fromARGB(220, 35, 102, 195),
+                backgroundColor: Color.fromARGB(249, 58, 166, 237),
                 foregroundColor: Colors.white,
-                padding: EdgeInsets.symmetric(horizontal: 70, vertical: 18),
+                padding: EdgeInsets.symmetric(horizontal: 57, vertical: 18),
                 textStyle: TextStyle(fontSize: 16),
                 shadowColor: Colors.black,
                 elevation: 15,
                 shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12),
+                  borderRadius: BorderRadius.circular(30),
                 ),
               ),
             ),
+
+            
           ],
         ),
       ),
