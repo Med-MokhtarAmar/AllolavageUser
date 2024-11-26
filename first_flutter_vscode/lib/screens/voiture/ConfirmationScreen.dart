@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'wash_screen.dart';
+// import 'wash_screen.dart';
 
 class ConfirmationScreen extends StatelessWidget {
   final String carName;        // Car Name
@@ -16,7 +16,7 @@ class ConfirmationScreen extends StatelessWidget {
   }) : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context) { 
     return Scaffold(
       appBar: AppBar(
         title: Text(
@@ -26,17 +26,17 @@ class ConfirmationScreen extends StatelessWidget {
         backgroundColor: const Color.fromARGB(220, 35, 102, 195),
         shadowColor: Colors.black,
         elevation: 10,
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: Color(0xF1FFFFFF)),
-          onPressed: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => WashScreen(nom: '', matricule: '', tel: '', taille: ''),
-              ),
-            );
-          },
-        ),
+        // leading: IconButton(
+        //   icon: Icon(Icons.arrow_back, color: Color(0xF1FFFFFF)),
+        //   onPressed: () {
+        //     Navigator.push(
+        //       context,
+        //       MaterialPageRoute(
+        //         builder: (context) => WashScreen(nom: '', matricule: '', tel: '', taille: ''),
+        //       ),
+        //     );
+        //   },
+        // ),
       ),
       body: SingleChildScrollView(
         child: Padding(
@@ -55,7 +55,7 @@ class ConfirmationScreen extends StatelessWidget {
                     mainAxisSize: MainAxisSize.min,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(
+                      const Text(
                         'Détails de la réservation',
                         style: TextStyle(fontSize: 17, fontWeight: FontWeight.bold),
                       ),
@@ -78,7 +78,7 @@ class ConfirmationScreen extends StatelessWidget {
                      
                       ListTile(
                         leading: Icon(Icons.calendar_today, color: Color.fromARGB(238, 129, 1, 164)),
-                        title: Text(
+                        title: const Text(
                           'Temps de lavage:',
                           style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold),
                         ),
@@ -94,7 +94,7 @@ class ConfirmationScreen extends StatelessWidget {
                           style: TextStyle(color: Colors.grey[600]),
                         ),
                       ),
-                      ListTile(
+                      const ListTile(
                         leading: Icon(Icons.attach_money, color: Color.fromARGB(238, 129, 1, 164)),
                         title: Text(
                           'Prix ​​de prestation:',
@@ -106,7 +106,7 @@ class ConfirmationScreen extends StatelessWidget {
                         ),
                       ),
                       SizedBox(height: 15),
-                      ListTile(
+                      const ListTile(
                         leading: Icon(Icons.money_off, color: Color.fromARGB(238, 129, 1, 164)),
                         title: Text(
                           'Taxe de mobilité:',
@@ -118,7 +118,7 @@ class ConfirmationScreen extends StatelessWidget {
                         ),
                       ),
                       SizedBox(height: 15),
-                      ListTile(
+                      const ListTile(
                         leading: Icon(Icons.monetization_on, color: Color.fromARGB(238, 129, 1, 164)),
                         title: Text(
                           'Prix Total:',
@@ -131,11 +131,11 @@ class ConfirmationScreen extends StatelessWidget {
                       ),
                       SizedBox(height: 15),
                       DropdownButtonFormField<String>(
-                        decoration: InputDecoration(
+                        decoration: const InputDecoration(
                           labelText: 'Mode de paiement',
                           prefixIcon: Icon(Icons.payment, color: Color.fromARGB(238, 129, 1, 164)),
                         ),
-                        items: [
+                        items: const [
                           DropdownMenuItem(value: 'Non', child: Text('Non')),
                           DropdownMenuItem(value: 'Ok', child: Text('Ok')),
                         ],
@@ -160,7 +160,7 @@ class ConfirmationScreen extends StatelessWidget {
                     context: context,
                     builder: (BuildContext context) {
                       return AlertDialog(
-                        title: Center(
+                        title: const Center(
                           child: Text(
                             'Confirmation!',
                             style: TextStyle(
@@ -168,8 +168,8 @@ class ConfirmationScreen extends StatelessWidget {
                             ),
                           ),
                         ),
-                        content: Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                        content: const Padding(
+                          padding: EdgeInsets.symmetric(horizontal: 16.0),
                           child: Text(
                             'Votre demande a été envoyée. Nous vous contacterons.',
                             textAlign: TextAlign.center,
@@ -198,11 +198,11 @@ class ConfirmationScreen extends StatelessWidget {
                     borderRadius: BorderRadius.circular(30),
                   ),
                 ),
-                child: Text(
+                child: const Text(
                   'Confirmer la commande',
                   style: TextStyle(
                     fontSize: 16,
-                    color: const Color.fromARGB(255, 255, 255, 255),
+                    color: Color.fromARGB(255, 255, 255, 255),
                   ),
                 ),
               ),

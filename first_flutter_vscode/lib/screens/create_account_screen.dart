@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
-import 'main_screen.dart';
-
+import 'main_screen.dart'; 
+import 'page/profile_screen.dart'; 
+import 'login.dart'; 
+import 'package:get/get.dart';
 
 class CreateAccountScreen extends StatefulWidget {
   @override
@@ -9,39 +11,27 @@ class CreateAccountScreen extends StatefulWidget {
 
 class _CreateAccountScreenState extends State<CreateAccountScreen> {
   final _formKey = GlobalKey<FormState>();
+  String name = '';
   String phoneNumber = '';
-  String carType = '';
-  String carNumber = '';
   String address = '';
 
   void _submitForm() {
-    // if (_formKey.currentState!.validate()) {
-    //   _formKey.currentState!.save();
-    //   Navigator.pushReplacement(
-    //     context,
-    //     MaterialPageRoute(builder: (context) => MainScreen()),
-    //   );
-    // }
-          Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (context) => MainScreen()),
-      );
+    if (_formKey.currentState!.validate()) {
+      _formKey.currentState!.save();
+      Get.to(() => const ProfilePage());
+      Get.to(() =>  MainScreen());
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Créer un compte',style: TextStyle(color: Colors.white)),
-        backgroundColor: Color.fromARGB(249, 58, 166, 237),
-        shadowColor: Colors.black,
+        title: const Text('Créer un compte', style: TextStyle(color: Colors.white)),
+        backgroundColor: const Color.fromARGB(220, 35, 102, 195),
+        shadowColor: const Color.fromARGB(255, 0, 0, 0),
         elevation: 10,
-        leading: IconButton( // Utilisez 'leading' avec IconButton pour gérer le retour
-        icon: Icon(Icons.arrow_back, color: Color(0xF1FFFFFF)),
-        onPressed: () {
-          Navigator.pop(context); // Retourne à l'écran précédent
-        },
-      ),
+        
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
@@ -49,17 +39,9 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
           key: _formKey,
           child: Column(
             children: [
-
-              // SizedBox(height: 130),
-              // Text('Créer un compte dans Allo lavage',style: TextStyle(fontSize: 18,
-              //  color:Colors.black), 
-              // ),
-
-              SizedBox(height: 20),
-
+              const SizedBox(height: 20),
               TextFormField(
-                autovalidateMode: AutovalidateMode.onUserInteraction,
-                decoration: InputDecoration(
+                decoration: const InputDecoration(
                   labelText: 'Nom Personnel',
                   prefixIcon: Icon(Icons.person, color: Color.fromARGB(238, 129, 1, 164)),
                 ),
@@ -69,15 +51,13 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
                 //   }
                 //   return null;
                 // },
-                onSaved: (value) {
-                  carType = value!;
-                },
+                // onSaved: (value) {
+                //   name = value!;
+                // },
               ),
-              SizedBox(height: 20),
-
+              const SizedBox(height: 20),
               TextFormField(
-                autovalidateMode: AutovalidateMode.onUserInteraction,
-                decoration: InputDecoration(
+                decoration: const InputDecoration(
                   labelText: 'Numéro de téléphone',
                   prefixIcon: Icon(Icons.phone, color: Color.fromARGB(238, 129, 1, 164)),
                 ),
@@ -89,68 +69,77 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
                 //   }
                 //   return null;
                 // },
-                onSaved: (value) {
-                  phoneNumber = value!;
-                },
+                // onSaved: (value) {
+                //   phoneNumber = value!;
+                // },
               ),
-              SizedBox(height: 20),
-              
-             DropdownButtonFormField<String>(
-                        decoration: InputDecoration(
-                          labelText: 'Lieu de résidence',
-                          prefixIcon: Icon(Icons.location_on, color: Color.fromARGB(238, 129, 1, 164)),
-                        ),
-                        items: [
-                          
-                          DropdownMenuItem(value: 'ayn talh', child: Text('ayn talh')),
-                          DropdownMenuItem(value: 'gedroh nuadibou', child: Text('gedroh nuadibou')),
-                          DropdownMenuItem(value: 'center metér', child: Text('center metér')),
-                          DropdownMenuItem(value: 'sahrawi', child: Text('sahrawi')),
-                          DropdownMenuItem(value: 'soucoucou', child: Text('soucoucou')),
-                        ],
-                        onChanged: (value) {
-                          // Logique lors de la sélection d'un élément (optionnel)
-                        },
-                        // validator: (value) {
-                        //   if (value == null || value.isEmpty) {
-                        //     return 'Choisissez un mode de paiement';
-                        //   }
-                        //   return null;
-                        // },
-                      ),
-              // SizedBox(height: 20),
-              // TextFormField(
-              //   autovalidateMode: AutovalidateMode.onUserInteraction,
-              //   decoration: InputDecoration(
-              //     labelText: 'Adresse',
-              //     prefixIcon: Icon(Icons.location_on, color: Color.fromARGB(238, 129, 1, 164)),
-              //   ),
-              //   validator: (value) {
-              //     if (value!.isEmpty) {
-              //       return 'Entrez une adresse';
-              //     }
-              //     return null;
-              //   },
-              //   onSaved: (value) {
-              //     address = value!;
-              //   },
-              // ),
-              SizedBox(height: 20),
+              const SizedBox(height: 20),
+              DropdownButtonFormField<String>(
+                decoration: const InputDecoration(
+                  labelText: 'Lieu de résidence',
+                  prefixIcon: Icon(Icons.location_on, color: Color.fromARGB(238, 129, 1, 164)),
+                ),
+                items: const [
+                  DropdownMenuItem(value: 'ayn talh', child: Text('ayn talh')),
+                  DropdownMenuItem(value: 'gedroh nuadibou', child: Text('gedroh nuadibou')),
+                  DropdownMenuItem(value: 'center metér', child: Text('center metér')),
+                  DropdownMenuItem(value: 'sahrawi', child: Text('sahrawi')),
+                  DropdownMenuItem(value: 'soucoucou', child: Text('soucoucou')),
+                ],
+                onChanged: (value) {
+                  setState(() {
+                    address = value!;
+                  });
+                },
+                // validator: (value) {
+                //   if (value == null || value.isEmpty) {
+                //     return 'Choisissez votre lieu de résidence';
+                //   }
+                //   return null;
+                // },
+              ),
+              const SizedBox(height: 20),
               ElevatedButton(
                 onPressed: _submitForm,
-                child: Text('Inscription'),
+                child: const Text('Inscription'),
                 style: ElevatedButton.styleFrom(
-                  padding: EdgeInsets.symmetric(horizontal: 100, vertical: 18),
-                  backgroundColor: Color.fromARGB(249, 58, 166, 237),
+                  padding: const EdgeInsets.symmetric(horizontal: 100, vertical: 18),
+                  backgroundColor: const Color.fromARGB(220, 35, 102, 195),
                   foregroundColor: Colors.white,
-                  textStyle: TextStyle(fontSize: 16),
+                  textStyle: const TextStyle(fontSize: 16),
                   shadowColor: Colors.black,
                   elevation: 20,
                   shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(30),
+                    borderRadius: BorderRadius.circular(30),
                   ),
                 ),
               ),
+
+               SizedBox(height: 10),
+           
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Text(
+                    "Si vous avez un compte ?",
+                    style: TextStyle(fontSize: 15),
+                  ),
+                  TextButton(
+                    onPressed: () {
+                      Get.to(login());   
+                    },
+                    child: const Text(
+                      "Connexion",
+                      style: TextStyle(
+                        fontSize: 13,
+                        color: Color.fromARGB(249, 58, 166, 237),
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+
             ],
           ),
         ),

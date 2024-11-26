@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart'; 
+import 'notification.dart'; 
 
 class ProfilePage extends StatelessWidget {
   const ProfilePage({Key? key}) : super(key: key);
@@ -7,6 +9,10 @@ class ProfilePage extends StatelessWidget {
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
     return Scaffold(
+      appBar: AppBar(
+        title: const Text('Profile'),
+        backgroundColor: Colors.blueAccent,
+      ),
       body: SingleChildScrollView(
         child: Container(
           padding: const EdgeInsets.all(16),
@@ -14,87 +20,71 @@ class ProfilePage extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              // Profile Picture with Circular Border
               Container(
                 width: 150,
-                child: CircleAvatar(
-                  radius: 60,
-                  backgroundImage: const ExactAssetImage('assets/images/logo.png'), // Corrected path
-                ),
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
                   border: Border.all(
-                    color: Colors.blueAccent, // Adjust border color as needed
+                    color: Colors.blueAccent,
                     width: 5.0,
                   ),
                 ),
-              ),
-              
-              const SizedBox(height: 10),
-              
-              // User Name with Verified Badge
-              SizedBox(
-                width: size.width * .5,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(
-                      'John Doe',
-                      style: const TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    const SizedBox(width: 5),
-                    Image.asset(
-                      "assets/images/verified.png", // Path to verified badge image
-                      width: 24,
-                      height: 24,
-                    ),
-                  ],
+                child: const CircleAvatar(
+                  radius: 60,
+                  backgroundImage: ExactAssetImage('images/assets/logo.png'),
                 ),
               ),
-              
-              // Email Address
-              const Text(
-                'johndoe@gmail.com',
-                style: TextStyle(
-                  fontSize: 16,
-                  color: Colors.grey,
-                ),
+              const SizedBox(height: 20),
+              const Column(
+                children: [
+                  Text(
+                    'Med Mokhtar',
+                    style: TextStyle(
+                      fontSize: 22,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  SizedBox(height: 10),
+                  Text(
+                    'Elvellouje',
+                    style: TextStyle(
+                      fontSize: 20,
+                      color: Colors.grey,
+                    ),
+                  ),
+                  SizedBox(height: 10),
+                  Text(
+                    '48682847',
+                    style: TextStyle(
+                      fontSize: 18,
+                      color: Colors.grey,
+                    ),
+                  ),
+                ],
               ),
-              
               const SizedBox(height: 30),
-              
-              // Profile Options
               SizedBox(
-                width: size.width,
+                width: size.width * 0.9,
                 child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    ProfileWidget(
-                      icon: Icons.person,
-                      title: 'My Profile',
+                    ProfileOption(
+                      icon: Icons.language,
+                      title: 'Language',
+                      onTap: () => _showLanguageSelector(context),
                     ),
-                    ProfileWidget(
-                      icon: Icons.settings,
-                      title: 'Settings',
-                    ),
-                    ProfileWidget(
+                  ProfileOption(
                       icon: Icons.notifications,
                       title: 'Notifications',
+                      // onTap: () => Get.to(() => NotificationExample()), 
                     ),
-                    ProfileWidget(
-                      icon: Icons.chat,
-                      title: 'FAQs',
-                    ),
-                    ProfileWidget(
+
+                    const ProfileOption(
                       icon: Icons.share,
-                      title: 'Share',
+                      title: 'Partager',
                     ),
-                    ProfileWidget(
+                    const ProfileOption(
                       icon: Icons.logout,
-                      title: 'Log Out',
+                      title: 'Déconnexion',
                     ),
                   ],
                 ),
@@ -105,38 +95,95 @@ class ProfilePage extends StatelessWidget {
       ),
     );
   }
+
+  // Fonction pour afficher le sélecteur de langue
+  void _showLanguageSelector(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (BuildContext context) {
+        return Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const SizedBox(height: 10),
+            const Text(
+              'Sélectionnez la langue',
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            ),
+            const Divider(),
+            ListTile(
+              leading: const Icon(Icons.language, color: Colors.blueAccent),
+              title: const Text('Anglais'),
+              onTap: () {
+                _changeLanguage(context, 'en'); 
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.language, color:Color.fromARGB(238, 129, 1, 164)),
+              title: const Text('Français'),
+              onTap: () {
+                _changeLanguage(context, 'fr');
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.language, color: Colors.green),
+              title: const Text('العربية'),
+              onTap: () {
+                _changeLanguage(context, 'ar');
+              },
+            ),
+            const SizedBox(height: 20),
+          ],
+        );
+      },
+    );
+  }
+
+  // Fonction pour changer la langue
+  void _changeLanguage(BuildContext context, String languageCode) {
+    Navigator.pop(context);
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text('Langue modifiée en ${languageCode.toUpperCase()}'),
+        duration: const Duration(seconds: 2),
+      ),
+    );
+  }
 }
 
-// Profile Widget for Each Option
-class ProfileWidget extends StatelessWidget {
+class ProfileOption extends StatelessWidget {
   final IconData icon;
   final String title;
+  final VoidCallback? onTap;
 
-  const ProfileWidget({
-    Key? key,
-    required this.icon,
-    required this.title,
-  }) : super(key: key);
+  const ProfileOption({required this.icon, required this.title, this.onTap, Key? key})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8.0),
-      child: Row(
-        children: [
-          Icon(
-            icon,
-            size: 28,
-            color: Colors.blueAccent, // Customize icon color
-          ),
-          const SizedBox(width: 20),
-          Text(
-            title,
-            style: const TextStyle(
-              fontSize: 18,
+      child: GestureDetector(
+        onTap: onTap,
+        child: Row(
+          children: [
+            Icon(
+              icon,
+              color: Colors.blueAccent,
+              size: 28,
             ),
-          ),
-        ],
+            const SizedBox(width: 16),
+            Text(
+              title,
+              style: const TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.w500,
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

@@ -1,16 +1,13 @@
 import 'package:flutter/material.dart';
 import 'home/home_screen.dart';
 import 'voiture/car_screen.dart';
-// import 'wash_screen.dart';
 import 'demande/reservation_screen.dart';
 import 'page/profile_screen.dart';
 
 
-
-
-
-
 class MainScreen extends StatefulWidget {
+ 
+
   @override
   _MainScreenState createState() => _MainScreenState();
 }
@@ -21,7 +18,6 @@ class _MainScreenState extends State<MainScreen> {
   List<Widget> _pages = <Widget>[
     HomeScreen(),
     CarScreen(),
-    // WashScreen(),
     ReservationScreen(),
     ProfilePage(),
   ];
@@ -50,10 +46,6 @@ class _MainScreenState extends State<MainScreen> {
               icon: Icon(Icons.directions_car),
               label: 'Voiture',
             ),
-            // BottomNavigationBarItem(
-            //   icon: Icon(Icons.local_car_wash),
-            //   label: 'Lavage',
-            // ),
             BottomNavigationBarItem(
               icon: Icon(Icons.calendar_today),
               label: 'Demande',
@@ -64,9 +56,9 @@ class _MainScreenState extends State<MainScreen> {
             ),
           ],
           currentIndex: _selectedIndex,
-          selectedItemColor: const Color.fromARGB(255, 239, 185, 252), // Couleur du texte sélectionné
-          unselectedItemColor: Colors.white, // Couleur du texte non sélectionné
-          showUnselectedLabels: true, // Affiche les étiquettes non sélectionnées
+          selectedItemColor: const Color.fromARGB(255, 239, 185, 252), // Color of the selected text
+          unselectedItemColor: Colors.white, // Color of the unselected text
+          showUnselectedLabels: true, // Show unselected labels
           onTap: _onItemTapped,
         ),
       ),

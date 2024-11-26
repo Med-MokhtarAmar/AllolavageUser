@@ -2,15 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'ConfirmationScreen.dart';
 import 'car_screen.dart';
+import 'package:get/get.dart';
 
 class WashScreen extends StatefulWidget {
   final String matricule;
   final String nom;
   final String tel;
   final String taille;
-
   const WashScreen({super.key, required this.matricule, required this.nom, required this.tel, required this.taille});
-  
   @override
   _WashScreenState createState() => _WashScreenState();
 }
@@ -26,7 +25,6 @@ class _WashScreenState extends State<WashScreen> {
   String? _selectedTime;
   String address = '';
 
-  // Déclaration des variables pour les informations de la voiture
   String _carName = '';
   String _carSize = ''; 
   String _registration = '';
@@ -57,31 +55,26 @@ class _WashScreenState extends State<WashScreen> {
       // Vérifiez si au moins une case à cocher est sélectionnée
       if (!avec_brosage && !sans_brosage) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
+          const SnackBar(
             content: Text('Veuillez sélectionner au moins un service de lavage.'),
             duration: Duration(seconds: 2),
           ),
         );
-        return; // Quittez la fonction si aucun service n'est sélectionné
+        return; 
       }
 
       _formKey.currentState!.save();
-      _carName = widget.nom; // Assignez le nom de la voiture
+      _carName = widget.nom; 
       _carSize = widget.taille;
-      _registration = widget.matricule; // Utilisez le matricule
-      _bookingTime = '$_selectedDate $_selectedTime'; // Combinez la date et l'heure
+      _registration = widget.matricule; 
+      _bookingTime = '$_selectedDate $_selectedTime'; 
 
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => ConfirmationScreen(
+      Get.to(ConfirmationScreen(
             carName: _carName,
             carSize: _carSize,
             registration: _registration,
             bookingTime: _bookingTime,
-          ),
-        ),
-      );
+          ));
     }
   }
 
@@ -89,18 +82,15 @@ class _WashScreenState extends State<WashScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Lavage'),
+        title: const Text('Lavage'),
         backgroundColor: const Color.fromARGB(220, 35, 102, 195),
         shadowColor: Colors.black,
         elevation: 10,
-        titleTextStyle: TextStyle(color: Color(0xF1FFFFFF), fontSize: 18),
+        titleTextStyle: const TextStyle(color: Color(0xF1FFFFFF), fontSize: 18),
         leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: Color(0xF1FFFFFF)),
+          icon: const Icon(Icons.arrow_back, color: Color(0xF1FFFFFF)),
           onPressed: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => CarScreen()),
-            );
+            Get.to(CarScreen());
           },
         ),
       ),
@@ -113,31 +103,31 @@ class _WashScreenState extends State<WashScreen> {
               children: [
                 Card(
                   elevation: 5,
-                  margin: EdgeInsets.symmetric(horizontal: 5, vertical: 10),
+                  margin: const EdgeInsets.symmetric(horizontal: 5, vertical: 10),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(10),
                   ),
                   child: ListTile(
                     title: Text(
                       '${widget.nom}',
-                      style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                      style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                     ),
                     subtitle: Text(
                       '${widget.matricule}',
-                      style: TextStyle(fontSize: 14, color: Colors.green),
+                      style: const TextStyle(fontSize: 14, color: Colors.green),
                     ),
                     trailing: Text(
                       '${widget.tel}',
-                      style: TextStyle(fontSize: 14, color: Color.fromARGB(238, 129, 1, 164)),
+                      style: const TextStyle(fontSize: 14, color: Color.fromARGB(238, 129, 1, 164)),
                     ),
-                    leading: Icon(Icons.directions_car, color: Color.fromARGB(238, 129, 1, 164)),
+                    leading: const Icon(Icons.directions_car, color: Color.fromARGB(238, 129, 1, 164)),
                 ),
                 ),
-                SizedBox(height: 10), 
+                const SizedBox(height: 10), 
 
-                Row(
+                const Row(
                   children: [
-                    Icon(Icons.local_car_wash, color: const Color.fromARGB(220, 35, 102, 195), size: 20),
+                    Icon(Icons.local_car_wash, color: Color.fromARGB(220, 35, 102, 195), size: 20),
                     SizedBox(width: 8),
                     Text(
                       'Principales Prestations',
@@ -149,21 +139,21 @@ class _WashScreenState extends State<WashScreen> {
                     ),
                   ],
                 ),
-                SizedBox(height: 10),
+                const SizedBox(height: 10),
 
                 ListView(
                   shrinkWrap: true,
-                  physics: NeverScrollableScrollPhysics(),
+                  physics: const NeverScrollableScrollPhysics(),
                   children: [
                     Card(
                       elevation: 5,
                       child: ListTile(
-                        leading: Icon(Icons.cleaning_services, color: Color.fromARGB(238, 129, 1, 164)),
-                        title: Text(
+                        leading: const Icon(Icons.cleaning_services, color: Color.fromARGB(238, 129, 1, 164)),
+                        title: const Text(
                           'Service de lavage avec brossage',
                           style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold),
                         ),
-                        subtitle: Text(
+                        subtitle: const Text(
                           'Prix: 50 \$',
                           style: TextStyle(color: Colors.green, fontSize: 12.0),
                         ),
@@ -178,17 +168,17 @@ class _WashScreenState extends State<WashScreen> {
                         ),
                       ),
                     ),
-                    SizedBox(height: 10),
+                    const SizedBox(height: 10),
 
                     Card(
                       elevation: 5,
                       child: ListTile(
-                        leading: Icon(Icons.bubble_chart, color: Color.fromARGB(238, 129, 1, 164)),
-                        title: Text(
+                        leading: const Icon(Icons.bubble_chart, color: Color.fromARGB(238, 129, 1, 164)),
+                        title: const Text(
                           'Service de lavage sans brossage',
                           style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold),
                         ),
-                        subtitle: Text(
+                        subtitle: const Text(
                           'Prix: 30 \$',
                           style: TextStyle(color: Colors.green, fontSize: 12.0),
                         ),
@@ -203,11 +193,11 @@ class _WashScreenState extends State<WashScreen> {
                         ),
                       ),
                     ),
-                    SizedBox(height: 10),
+                    const SizedBox(height: 10),
 
-                    Row(
+                    const Row(
                       children: [
-                        Icon(Icons.clean_hands, color: const Color.fromARGB(220, 35, 102, 195), size: 20),
+                        Icon(Icons.clean_hands, color: Color.fromARGB(220, 35, 102, 195), size: 20),
                         SizedBox(width: 8),
                         Text(
                           'Prestations Supplémentaires',
@@ -219,17 +209,17 @@ class _WashScreenState extends State<WashScreen> {
                         ),
                       ],
                     ),
-                    SizedBox(height: 10),
+                    const SizedBox(height: 10),
 
                     Card(
                       elevation: 5,
                       child: ListTile(
-                        leading: Icon(Icons.format_paint, color: Color.fromARGB(238, 129, 1, 164)),
-                        title: Text(
+                        leading: const Icon(Icons.format_paint, color: Color.fromARGB(238, 129, 1, 164)),
+                        title: const Text(
                           'Suppression des rayures',
                           style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold),
                         ),
-                        subtitle: Text(
+                        subtitle: const Text(
                           'Prix: 50 \$',
                           style: TextStyle(color: Colors.green, fontSize: 12.0),
                         ),
@@ -243,17 +233,17 @@ class _WashScreenState extends State<WashScreen> {
                         ),
                       ),
                     ),
-                    SizedBox(height: 10),
+                    const SizedBox(height: 10),
 
                     Card(
                       elevation: 5,
                       child: ListTile(
-                        leading: Icon(Icons.build_circle, color: Color.fromARGB(238, 129, 1, 164)),
-                        title: Text(
+                        leading: const Icon(Icons.build_circle, color: Color.fromARGB(238, 129, 1, 164)),
+                        title: const Text(
                           'Vidange',
                           style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold),
                         ),
-                        subtitle: Text(
+                        subtitle: const Text(
                           'Prix: 30 \$',
                           style: TextStyle(color: Colors.green, fontSize: 12.0),
                         ),
@@ -267,14 +257,14 @@ class _WashScreenState extends State<WashScreen> {
                         ),
                       ),
                     ),
-                    SizedBox(height: 10),
+                    const SizedBox(height: 10),
 
                       TextFormField(
                       readOnly: true,
                       onTap: () => _selectDate(context),
-                      decoration: InputDecoration(
+                      decoration: const InputDecoration(
                         labelText: 'Date de lavage',
-                        labelStyle: TextStyle(color: const Color.fromARGB(255, 81, 80, 80)),
+                        labelStyle: TextStyle(color: Color.fromARGB(255, 81, 80, 80)),
                         prefixIcon: Icon(Icons.calendar_today, color: Color.fromARGB(238, 129, 1, 164)),
                       ),
                       controller: TextEditingController(text: _selectedDate),
@@ -285,12 +275,12 @@ class _WashScreenState extends State<WashScreen> {
                         return null;
                       },
                     ),
-                    SizedBox(height: 10),
+                    const SizedBox(height: 10),
 
                     DropdownButtonFormField<String>(
-                      decoration: InputDecoration(
+                      decoration: const InputDecoration(
                         labelText: 'Heure de lavage',
-                        labelStyle: TextStyle(color: const Color.fromARGB(255, 81, 80, 80)),
+                        labelStyle: TextStyle(color: Color.fromARGB(255, 81, 80, 80)),
                         prefixIcon: Icon(Icons.access_time, color: Color.fromARGB(238, 129, 1, 164)),
                       ),
                       items: _timeOptions.map((String time) {
@@ -305,13 +295,11 @@ class _WashScreenState extends State<WashScreen> {
                         });
                       },
                     ),
-
-                    // Ajoutez le champ pour l'adresse
-                    SizedBox(height: 10),
+                    const SizedBox(height: 10),
                     TextFormField(
-                      decoration: InputDecoration(
+                      decoration: const InputDecoration(
                         labelText: 'Adresse',
-                        labelStyle: TextStyle(color: const Color.fromARGB(255, 81, 80, 80)),
+                        labelStyle: TextStyle(color: Color.fromARGB(255, 81, 80, 80)),
                         prefixIcon: Icon(Icons.location_on, color: Color.fromARGB(238, 129, 1, 164)),
                       ),
                       validator: (value) {
@@ -327,15 +315,15 @@ class _WashScreenState extends State<WashScreen> {
                   ],
                 ),
                 
-                SizedBox(height: 15),
+                const SizedBox(height: 15),
                 
                 ElevatedButton(
                   onPressed: _submitForm,
                   style: ElevatedButton.styleFrom(
-                    padding: EdgeInsets.symmetric(horizontal: 85, vertical: 17),
-                    backgroundColor: Color.fromARGB(220, 35, 102, 195),
+                    padding: const EdgeInsets.symmetric(horizontal: 85, vertical: 17),
+                    backgroundColor: const Color.fromARGB(220, 35, 102, 195),
                   ),
-                  child: Text('Confirmer le lavage', style: TextStyle(color: Colors.white)),
+                  child: const Text('Confirmer le lavage', style: TextStyle(color: Colors.white)),
                 ),
               ],
             ),
