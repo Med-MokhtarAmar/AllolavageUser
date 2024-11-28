@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:allolavage/screens/home/homecar.dart';
 import 'package:get/get.dart';
 
+import '../../servicesControllers/serviceController.dart';
+
 class HomeScreen extends StatefulWidget {
   @override
   _HomeScreenState createState() => _HomeScreenState();
@@ -11,12 +13,14 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   String query = '';
-  final Carscontroller carsController = Get.put(Carscontroller());
+  final Servicecontroller carsController = Get.put(Servicecontroller());
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        centerTitle: true,
+        automaticallyImplyLeading: false, // Hides the back button
         title: Text('Home'),
         backgroundColor: const Color.fromARGB(220, 35, 102, 195),
         shadowColor: Colors.black,
@@ -66,25 +70,24 @@ class _HomeScreenState extends State<HomeScreen> {
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 16),
               height: 300,
-              child: GetBuilder<Carscontroller>(
+              child: GetBuilder<Servicecontroller>(
                 builder: (controller) {
-                  if (controller.carsPrencip.isEmpty) {
+                  if (carsController.mainServices.isEmpty) {
                     return const Center(
-                        child: CircularProgressIndicator()); // Loading indicator
+                        child:
+                            CircularProgressIndicator()); // Loading indicator
                   } else {
                     return ListView.builder(
                       scrollDirection: Axis.horizontal,
-                      itemCount: controller.carsPrencip.length,
+                      itemCount: carsController.mainServices.length,
                       padding: const EdgeInsets.symmetric(vertical: 8.0),
                       itemBuilder: (context, index) {
-                        var car = controller.carsPrencip[index];
+                        var car = carsController.mainServices[index];
 
                         if (query.isNotEmpty &&
-                            !car['ServicePren']
-                                .toLowerCase()
+                            !(car['fr_titel']?.toLowerCase() ?? '')
                                 .contains(query.toLowerCase()) &&
-                            !car['model']
-                                .toLowerCase()
+                            !(car['model']?.toLowerCase() ?? '')
                                 .contains(query.toLowerCase())) {
                           return const SizedBox.shrink();
                         }
@@ -115,8 +118,8 @@ class _HomeScreenState extends State<HomeScreen> {
                                 ClipRRect(
                                   borderRadius: const BorderRadius.vertical(
                                       top: Radius.circular(10.0)),
-                                  child: Image.network(
-                                    "${BaseUrlAPI().baseUrlimage}${car['image']}",
+                                  child: Image.asset(
+                                    "images/logo.png",
                                     height: 130,
                                     width: 160,
                                     fit: BoxFit.cover,
@@ -124,7 +127,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                 ),
                                 const SizedBox(height: 20.0),
                                 Text(
-                                  '${car['model']}',
+                                  '${car['model'] ?? "no model"}',
                                   textAlign: TextAlign.center,
                                   style: const TextStyle(
                                     fontSize: 14.0,
@@ -134,7 +137,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                 ),
                                 const SizedBox(height: 6.0),
                                 Text(
-                                  '${car['ServicePren']}',
+                                  '${car['ServicePren'] ?? "no description"}',
                                   style: const TextStyle(
                                     fontSize: 11.0,
                                     color: Color.fromARGB(237, 93, 93, 93),
@@ -142,7 +145,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                 ),
                                 const SizedBox(height: 4.0),
                                 Text(
-                                  '${car['prix']} MRU',
+                                  '${car['prix'].toString() ?? 0} MRU',
                                   style: const TextStyle(
                                     fontSize: 14.0,
                                     color: Colors.green,
@@ -234,4 +237,3 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 }
- 

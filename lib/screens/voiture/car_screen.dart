@@ -1,11 +1,7 @@
-import 'package:allolavage/servicesControllers/CarsController.dart';
+import 'package:allolavage/servicesControllers/serviceController.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-// import '../home/home_screen.dart';
-// import 'package:intl/intl.dart';
-// import 'ConfirmationScreen.dart';
-// import 'main_screen.dart';
-import 'wash_screen.dart';
+import '../washScreen/wash_screen.dart';
 
 class CarScreen extends StatefulWidget {
   @override
@@ -16,42 +12,67 @@ class _CarScreenState extends State<CarScreen> {
   final _formKey = GlobalKey<FormState>();
 
   List<Map<String, String>> carList = [];
-  final Carscontroller carsController = Get.put(Carscontroller());
+  final Servicecontroller carsController = Get.put(Servicecontroller());
 
-  String carName = '';
-  String carSize = 'Milieu';
-  String carPlate = '';
-  String phoneNumber = '';
+  String mark = '';
+  String size = 'Milieu';
+  String numero = '';
+  String phone = '';
+  bool isloading = false;
+  void addCar(BuildContext context) async {
+    setState(() {
+      isloading = true;
+    });
+    if (numero == "") {
+      numero = "sens numero";
+    }
+    bool success = await carsController.createCar(mark, size, numero, phone);
+    if (success) {
+      Navigator.of(context).pop();
+      setState(() {
+        isloading = false;
+        mark = '';
+        size = 'Milieu';
+        numero = '';
+        phone = '';
+      });
+      Get.snackbar("", "Car added successfully!");
+      print("Car added successfully!");
+    } else {
+      setState(() {
+        isloading = false;
+        mark = '';
+        size = 'Milieu';
+        numero = '';
+        phone = '';
+      });
+      Get.snackbar("", "Failed to add car.");
+
+      print("Failed to add car.");
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        
+                centerTitle: true,
+        automaticallyImplyLeading: false, // Hides the back button
         title: const Text('Ma Voiture'),
         backgroundColor: const Color.fromARGB(220, 35, 102, 195),
         shadowColor: Colors.black,
         elevation: 10,
         titleTextStyle: const TextStyle(color: Color(0xF1FFFFFF), fontSize: 18),
-        // leading: IconButton(
-        //   icon: Icon(Icons.arrow_back, color: Color(0xF1FFFFFF)),
-        //   onPressed: () {
-        //     Navigator.push(
-        //       context,
-        //       MaterialPageRoute(builder: (context) => HomeScreen()),
-        //     );
-        //   },
-        // ),
+ 
       ),
-      body: Column(
+      body: 
+      Column(
         children: [
           const SizedBox(height: 20),
           Expanded(
-            child: GetBuilder<Carscontroller>(builder: (controller) {            
+            child: GetBuilder<Servicecontroller>(builder: (controller) {
               if (controller.mycars.isEmpty) {
-                return const Center(
-                    child:
-                        CircularProgressIndicator()); 
+                return const Center(child: CircularProgressIndicator());
               } else {
                 return ListView.builder(
                   itemCount: carsController.mycars.length,
@@ -60,20 +81,59 @@ class _CarScreenState extends State<CarScreen> {
 
                     return GestureDetector(
                       onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => WashScreen(
-                                  nom: car['mark'] ?? '',
-                                  matricule: car['Numero'] ?? '',
-                                  tel: car['phone'] ?? 'dont forget..',
-                                  taille: car['size'] ?? '')),
-                        );
+                        Get.to(() => WashScreen(
+                          carId:car['id'] ?? '' ,
+                            nom: car['mark'] ?? '',
+                            matricule: car['Numero'] ?? '',
+                            tel: car['phone'] ?? ' ? ',
+                            size: car['size'] ?? ''));
+                      },
+                      onLongPress: () {
+                        showDialog(
+                            context: context,
+                            builder: (BuildContext context) {
+                              return AlertDialog(
+                                  title: const Text(
+                                    "suppretion d' une voiteure une voiture",
+                                    style: TextStyle(
+                                      fontSize: 25.0,
+                                      color: Color.fromARGB(220, 5, 25, 177),
+                                    ),
+                                  ),
+                                  content: Column(
+                                    mainAxisSize: MainAxisSize.min,
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      const Center(
+                                        child: Text(
+                                            "do you want to delete this car"),
+                                      ),
+                                      Row(
+                                        children: [
+                                          TextButton(
+                                            onPressed: () {
+                                              controller
+                                                  .deleteCarById(car['id']!);
+                                              Navigator.of(context).pop();
+                                            },
+                                            child: const Text('ok'),
+                                          ),
+                                          TextButton(
+                                            onPressed: () {
+                                              Navigator.of(context).pop();
+                                            },
+                                            child: const Text('annuler'),
+                                          ),
+                                        ],
+                                      )
+                                    ],
+                                  ));
+                            });
                       },
                       child: Card(
                         color: const Color.fromARGB(255, 239, 239, 249),
-                        margin:
-                          const EdgeInsets.symmetric(horizontal: 15, vertical: 5),
+                        margin: const EdgeInsets.symmetric(
+                            horizontal: 15, vertical: 5),
                         elevation: 10,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(10),
@@ -81,7 +141,7 @@ class _CarScreenState extends State<CarScreen> {
                         child: ListTile(
                           leading: CircleAvatar(
                             backgroundColor: Colors.blueAccent,
-                            child: Text(car['size'],
+                            child: Text(car['size']?[0] ?? "",
                                 style: const TextStyle(
                                     color: Color.fromARGB(238, 129, 1,
                                         164))), // Première lettre de la taille
@@ -147,6 +207,15 @@ class _CarScreenState extends State<CarScreen> {
           ),
         ],
       ),
+     
+     
+     
+     
+     
+     
+     
+     
+     
       floatingActionButton: Padding(
         padding: const EdgeInsets.only(bottom: 10.0),
         child: FloatingActionButton(
@@ -186,8 +255,8 @@ class _CarScreenState extends State<CarScreen> {
                               }
                               return null;
                             },
-                            onSaved: (value) {
-                              phoneNumber = value!;
+                            onChanged: (value) {
+                              phone = value;
                             },
                           ),
                           const SizedBox(height: 20),
@@ -207,13 +276,13 @@ class _CarScreenState extends State<CarScreen> {
                               }
                               return null;
                             },
-                            onSaved: (value) {
-                              carName = value!;
+                            onChanged: (value) {
+                              mark = value;
                             },
                           ),
                           const SizedBox(height: 20),
                           DropdownButtonFormField<String>(
-                            value: carSize,
+                            value: size,
                             items: ['Grand', 'Milieu', 'Petit']
                                 .map((size) => DropdownMenuItem(
                                       value: size,
@@ -229,7 +298,7 @@ class _CarScreenState extends State<CarScreen> {
                               ),
                             ),
                             onChanged: (value) {
-                              carSize = value!;
+                              size = value!;
                             },
                           ),
                           const SizedBox(height: 20),
@@ -245,13 +314,13 @@ class _CarScreenState extends State<CarScreen> {
                             autovalidateMode:
                                 AutovalidateMode.onUserInteraction,
                             validator: (value) {
-                              if (value!.isEmpty || value.length != 8) {
+                              if (value!.isNotEmpty && value.length != 8) {
                                 return 'Entrez Matricule de la voiture';
                               }
                               return null;
                             },
-                            onSaved: (value) {
-                              carPlate = value!;
+                            onChanged: (value) {
+                              numero = value;
                             },
                           ),
                           const SizedBox(height: 20),
@@ -262,31 +331,26 @@ class _CarScreenState extends State<CarScreen> {
                   actions: [
                     TextButton(
                       onPressed: () {
-                        Navigator.of(context)
-                            .pop(); 
+                        Navigator.of(context).pop();
                       },
                       child: const Text('Annuler'),
                     ),
                     TextButton(
                       onPressed: () {
-                        if (_formKey.currentState!.validate()) {
-                          _formKey.currentState!
-                              .save(); 
+                        if (_formKey.currentState!.validate() &&
+                            isloading == false) {
+                          // _formKey.currentState!.save();
 
-                          setState(() {
-                            carList.add({
-                              'name': carName,
-                              'size': carSize,
-                              'plate': carPlate,
-                              'phone': phoneNumber,
-                            });
-                          });
+                          addCar(context);
 
-                          Navigator.of(context)
-                              .pop(); // Ferme la boîte de dialogue
+                          // Ferme la boîte de dialogue
                         }
                       },
-                      child: const Text('Enregistrer'),
+                      child: isloading
+                          ? const Center(
+                              child: CircularProgressIndicator(),
+                            )
+                          : const Text('Enregistrer'),
                     ),
                   ],
                 );

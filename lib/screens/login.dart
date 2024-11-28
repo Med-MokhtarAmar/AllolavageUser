@@ -1,18 +1,67 @@
 import 'package:allolavage/screens/main_screen.dart';
+import 'package:allolavage/servicesControllers/serviceController.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:geolocator/geolocator.dart';
+import 'package:intl/intl.dart';
 import 'create_account_screen.dart';
-import 'home/home_screen.dart'; 
+import 'home/home_screen.dart';
 import 'package:get/get.dart';
+import 'package:timezone/timezone.dart' as tz;
 
 class login extends StatefulWidget {
   @override
   _login createState() => _login();
 }
 
+// ignore: camel_case_types
 class _login extends State<login> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   String? phoneNumber;
-   
+  final Servicecontroller controller = Get.put(Servicecontroller());
+  void insertdata() async {
+    try {
+      await FirebaseFirestore.instance.collection('secondservices').add({
+        "model": "evensis",
+        "fr_titel": "vidange",
+        "ar_titel": "lavage simple avec prostage _ar",
+        "image": "media/usersimages/logo.png",
+        "prix": 1300,
+        "size": "Petit"
+      });
+      print("the data inserted ------------------ ");
+    } catch (e) {
+      print(e);
+    }
+  }
+
+  Position? a;
+  void f() async {
+    try {
+      a = await controller.getCurrentLocation();
+      print("the location is $a ");
+      print(a);
+    } catch (e) {
+      print("we can not get the location !!!!!!!!!!!!!!!!!!!!!!! ");
+      print(e.toString());
+    }
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    // f();
+
+    // print("Current local time: ${DateFormat.yMd().add_jm().format(localTime)}");
+
+    // insertdata();
+  }
+
+  void loginFunction() async {
+    controller.saveToPreferences("1234");
+    Get.to(MainScreen());
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -54,66 +103,72 @@ class _login extends State<login> {
                 TextFormField(
                   decoration: const InputDecoration(
                     labelText: 'Numéro de téléphone',
-                    prefixIcon: Icon(Icons.phone, color: Color.fromARGB(238, 129, 1, 164)),
+                    prefixIcon: Icon(Icons.phone,
+                        color: Color.fromARGB(238, 129, 1, 164)),
                   ),
                   keyboardType: TextInputType.phone,
                   maxLength: 8,
-                  validator: (value) {
-                    if (value == null || value.isEmpty || value.length != 8) {
-                      return 'Entrez un numéro de téléphone valide de 8 chiffres';
-                    }
-                    return null;
-                  },
+                  // validator: (value) {
+                  //   if (value == null || value.isEmpty || value.length != 8) {
+                  //     return 'Entrez un numéro de téléphone valide de 8 chiffres';
+                  //   }
+                  //   return null;
+                  // },
                   onChanged: (value) {
                     setState(() {
-                      phoneNumber = value; 
+                      phoneNumber = value;
                     });
                   },
                 ),
                 const SizedBox(height: 20),
                 ElevatedButton(
                   onPressed: () {
-                    if (_formKey.currentState?.validate() ?? false) {
-                      List<String> existingPhoneNumbers = ['01234567', '07654321']; 
-                      
-                      if (existingPhoneNumbers.contains(phoneNumber)) {
-                        Get.to(HomeScreen());
-                        Get.to(MainScreen());
-                  
-                      } else {
-                        showDialog(
-                          context: context,
-                          builder: (BuildContext context) {
-                            return AlertDialog(
-                               title: Center(
-                                child: Text(
-                                  'Erreur',
-                                  style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    color: Theme.of(context).colorScheme.error, 
-                                  ),
-                                ),
-                              ),
-                              content: const Text('Ce numéro de téléphone n\'est pas enregistré.'),
-                              actions: [
-                                TextButton(
-                                  onPressed: () {
-                                    Navigator.of(context).pop(); 
-                                  },
-                                  child: const Text('OK'),
-                                ),
-                              ],
-                            );
-                          },
-                        );
-                      }
-                    }
+                    loginFunction();
+
+                    // insertdata();
+                    // if (_formKey.currentState?.validate() ?? false) {
+                    // List<String> existingPhoneNumbers = [
+                    //   '01234567',
+                    //   '07654321'
+                    // ];
+
+                    // if (existingPhoneNumbers.contains(phoneNumber)) {
+
+                    // } else {
+                    //   showDialog(
+                    //     context: context,
+                    //     builder: (BuildContext context) {
+                    //       return AlertDialog(
+                    //          title: Center(
+                    //           child: Text(
+                    //             'Erreur',
+                    //             style: TextStyle(
+                    //               fontWeight: FontWeight.bold,
+                    //               color: Theme.of(context).colorScheme.error,
+                    //             ),
+                    //           ),
+                    //         ),
+                    //         content: const Text('Ce numéro de téléphone n\'est pas enregistré.'),
+                    //         actions: [
+                    //           TextButton(
+                    //             onPressed: () {
+                    //               Navigator.of(context).pop();
+                    //             },
+                    //             child: const Text('OK'),
+                    //           ),
+                    //         ],
+                    //       );
+                    //     },
+                    //   );
+                    // }
+                    // }
                   },
                   child: const Text('Se connecter'),
                   style: ElevatedButton.styleFrom(
                     backgroundColor: const Color.fromARGB(220, 35, 102, 195),
                     foregroundColor: Colors.white,
-                    padding: const EdgeInsets.symmetric(horizontal: 70, vertical: 18),
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 70, vertical: 18),
                     textStyle: const TextStyle(fontSize: 16),
                     shadowColor: Colors.black,
                     elevation: 15,
@@ -121,7 +176,7 @@ class _login extends State<login> {
                       borderRadius: BorderRadius.circular(30),
                     ),
                   ),
-                ),  
+                ),
                 const SizedBox(height: 20),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -132,7 +187,7 @@ class _login extends State<login> {
                     ),
                     TextButton(
                       onPressed: () {
-                        Get.to(() =>  CreateAccountScreen());
+                        // Get.to(() => CreateAccountScreen());
                       },
                       child: const Text(
                         "Inscription",
