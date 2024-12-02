@@ -1,18 +1,17 @@
+import 'package:allolavage/servicesControllers/serviceController.dart';
 import 'package:flutter/material.dart';
-import 'home/home_screen.dart';
-import 'voiture/car_screen.dart';
-import 'demande/DemandsScreen.dart';
-import 'page/profile_screen.dart';
+import 'package:get/get.dart';
+import 'screens/home/home_screen.dart';
+import 'screens/voiture/car_screen.dart';
+import 'screens/demande/DemandsScreen.dart';
+import 'screens/page/profile_screen.dart';
 
-
-class MainScreen extends StatefulWidget {
- 
-
+class Entrypoint extends StatefulWidget {
   @override
-  _MainScreenState createState() => _MainScreenState();
+  _EntrypointState createState() => _EntrypointState();
 }
 
-class _MainScreenState extends State<MainScreen> {
+class _EntrypointState extends State<Entrypoint> {
   int _selectedIndex = 0;
 
   List<Widget> _pages = <Widget>[
@@ -28,13 +27,23 @@ class _MainScreenState extends State<MainScreen> {
     });
   }
 
+  Servicecontroller controller = Get.put(Servicecontroller());
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    controller.loadUserData();
+    controller.getDemandsData();
+    controller.getCarsData();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: _pages[_selectedIndex],
       bottomNavigationBar: Theme(
         data: Theme.of(context).copyWith(
-          canvasColor: const Color.fromARGB(220, 35, 102, 195), 
+          canvasColor: const Color.fromARGB(220, 35, 102, 195),
         ),
         child: BottomNavigationBar(
           items: const <BottomNavigationBarItem>[
@@ -56,7 +65,8 @@ class _MainScreenState extends State<MainScreen> {
             ),
           ],
           currentIndex: _selectedIndex,
-          selectedItemColor: const Color.fromARGB(255, 239, 185, 252), // Color of the selected text
+          selectedItemColor: const Color.fromARGB(
+              255, 239, 185, 252), // Color of the selected text
           unselectedItemColor: Colors.white, // Color of the unselected text
           showUnselectedLabels: true, // Show unselected labels
           onTap: _onItemTapped,

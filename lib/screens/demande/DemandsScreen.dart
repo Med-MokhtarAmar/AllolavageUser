@@ -1,3 +1,4 @@
+import 'package:allolavage/screens/demande/DemandeDetailes.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../servicesControllers/serviceController.dart';
@@ -25,13 +26,16 @@ class _DemandSscreenState extends State<DemandSscreen> {
       body: GetBuilder<Servicecontroller>(
         builder: (controller) {
           if (controller.myDemands.isEmpty) {
-            return const Center(child: CircularProgressIndicator());
+            return const Center(child: Text(" il n'ya pas des demandes"));
           } else {
             return ListView.builder(
               itemCount: controller.myDemands.length,
               itemBuilder: (context, index) {
                 final demand = controller.myDemands[index];
                 return GestureDetector(
+                  onTap: () {
+                    Get.to(() => DemandeDetailes(demande: demand));
+                  },
                   onLongPress: () {
                     _showDeleteDialog(context, demand['id']);
                   },
@@ -44,33 +48,78 @@ class _DemandSscreenState extends State<DemandSscreen> {
                       borderRadius: BorderRadius.circular(10),
                     ),
                     child: ListTile(
-                      leading: CircleAvatar(
-                        backgroundColor: Colors.blueAccent,
-                        child: Text(
-                          demand['size']?[0]?.toUpperCase() ?? '',
-                          style: const TextStyle(
-                            color: Color.fromARGB(238, 129, 1, 164),
-                          ),
-                        ), // First letter of 'size'
-                      ),
+                      // leading:  ,
                       title: Text(
-                        demand['mark'] ?? 'Unknown Mark',
+                        demand['model'] ?? 'Unknown Mark',
                         style: const TextStyle(
                           fontSize: 15,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
-                      subtitle: Text(
-                        demand['bookingTime']?.toString() ?? 'No Time',
-                        style: const TextStyle(color: Colors.green),
-                      ),
-                      trailing: Text(
-                        demand['phone'] ?? 'No Phone',
-                        style: const TextStyle(
-                          color: Color.fromARGB(238, 129, 1, 164),
+                      subtitle: Align(
+                        alignment: Alignment.bottomLeft,
+                        child: Column(
+                          // mainAxisAlignment: MainAxisAlignment.start,
+                          // mainAxisSize: MainA,
+                          children: [
+                            Row(
+                              children: [
+                                const Icon(
+                                  Icons.date_range_outlined,
+                                  color: Colors.green,
+                                  size: 17,
+                                ),
+                                Text(
+                                  demand['bookingTime']?.toString() ??
+                                      'No Time',
+                                  style: const TextStyle(color: Colors.green),
+                                ),
+                              ],
+                            ),
+                            // ignore: prefer_const_constructors
+                            Row(
+                              children: [
+                                const Icon(
+                                  Icons.attach_money_outlined,
+                                  color: Color.fromARGB(238, 129, 1, 164),
+                                  size: 18,
+                                ),
+                                Text(
+                                  " ${demand['prix']} ",
+                                  style: const TextStyle(
+                                    color: Color.fromARGB(238, 129, 1, 164),
+                                  ),
+                                ),
+                              ],
+                            )
+                          ],
                         ),
                       ),
+                      trailing: Column(
+                        children: [
+                          Text(
+                            demand['carNumero'],
+                            style: const TextStyle(),
+                          ),
+                          const SizedBox(
+                            height: 1,
+                          ),
+                          Text(
+                            demand['phone'] ?? 'No Phone',
+                            style: const TextStyle(
+                              color: Color.fromARGB(238, 129, 1, 164),
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
+                    // Padding(
+                    //   padding: const EdgeInsets.all(8.0),
+                    //   child: Align(
+                    //     alignment: Alignment.bottomLeft,
+                    //     child: Text("data"),
+                    //   ),
+                    // )
                   ),
                 );
               },

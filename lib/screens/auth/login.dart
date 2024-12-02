@@ -1,13 +1,11 @@
-import 'package:allolavage/screens/main_screen.dart';
+import 'package:allolavage/screens/auth/register.dart';
+import 'package:allolavage/EntryPoint.dart';
 import 'package:allolavage/servicesControllers/serviceController.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:intl/intl.dart';
-import 'create_account_screen.dart';
-import 'home/home_screen.dart';
+
 import 'package:get/get.dart';
-import 'package:timezone/timezone.dart' as tz;
 
 class login extends StatefulWidget {
   @override
@@ -21,47 +19,31 @@ class _login extends State<login> {
   final Servicecontroller controller = Get.put(Servicecontroller());
   void insertdata() async {
     try {
-      await FirebaseFirestore.instance.collection('secondservices').add({
-        "model": "evensis",
-        "fr_titel": "vidange",
-        "ar_titel": "lavage simple avec prostage _ar",
-        "image": "media/usersimages/logo.png",
-        "prix": 1300,
-        "size": "Petit"
+      await FirebaseFirestore.instance.collection('moughataa').add({
+        "fr_name": "Ayn Taleh",
+        "ar_name": "عين الطلح",
       });
+      
       print("the data inserted ------------------ ");
     } catch (e) {
       print(e);
     }
   }
 
-  Position? a;
-  void f() async {
-    try {
-      a = await controller.getCurrentLocation();
-      print("the location is $a ");
-      print(a);
-    } catch (e) {
-      print("we can not get the location !!!!!!!!!!!!!!!!!!!!!!! ");
-      print(e.toString());
-    }
-  }
+  
 
+  TextEditingController tel = TextEditingController();
+  TextEditingController pwd = TextEditingController();
   @override
   void initState() {
+    // insertdata();
     // TODO: implement initState
     super.initState();
     // f();
 
     // print("Current local time: ${DateFormat.yMd().add_jm().format(localTime)}");
-
-    // insertdata();
   }
 
-  void loginFunction() async {
-    controller.saveToPreferences("1234");
-    Get.to(MainScreen());
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -101,9 +83,27 @@ class _login extends State<login> {
                 ),
                 const SizedBox(height: 30),
                 TextFormField(
+                  controller: tel,
                   decoration: const InputDecoration(
                     labelText: 'Numéro de téléphone',
                     prefixIcon: Icon(Icons.phone,
+                        color: Color.fromARGB(238, 129, 1, 164)),
+                  ),
+                  keyboardType: TextInputType.phone,
+                  maxLength: 8,
+                  validator: (value) {
+                    if (value == null || value.isEmpty || value.length != 8) {
+                      return 'Entrez un numéro de téléphone valide de 8 chiffres';
+                    }
+                    return null;
+                  },
+                ),
+                TextFormField(
+                  controller: pwd,
+                  obscureText: true,
+                  decoration: const InputDecoration(
+                    labelText: 'password',
+                    prefixIcon: Icon(Icons.password,
                         color: Color.fromARGB(238, 129, 1, 164)),
                   ),
                   keyboardType: TextInputType.phone,
@@ -114,16 +114,11 @@ class _login extends State<login> {
                   //   }
                   //   return null;
                   // },
-                  onChanged: (value) {
-                    setState(() {
-                      phoneNumber = value;
-                    });
-                  },
                 ),
                 const SizedBox(height: 20),
                 ElevatedButton(
                   onPressed: () {
-                    loginFunction();
+                    controller.login(tel.text, pwd.text);
 
                     // insertdata();
                     // if (_formKey.currentState?.validate() ?? false) {
@@ -187,7 +182,7 @@ class _login extends State<login> {
                     ),
                     TextButton(
                       onPressed: () {
-                        // Get.to(() => CreateAccountScreen());
+                        Get.to(() => Register());
                       },
                       child: const Text(
                         "Inscription",

@@ -9,8 +9,6 @@ import '../voiture/ConfirmationScreen.dart';
 
 import 'package:get/get.dart';
 
-import '../voiture/car_screen.dart';
-
 class WashScreen extends StatefulWidget {
   final String matricule;
   final String nom;
@@ -48,7 +46,7 @@ class _WashScreenState extends State<WashScreen> {
   }
 
   void fetchSecondServices() async {
-    isservicesPrinsipalesLoading = true;
+    issecondServicesLoading = true;
     try {
       QuerySnapshot? servicesData = await FirebaseFirestore.instance
           .collection('secondservices')
@@ -57,7 +55,7 @@ class _WashScreenState extends State<WashScreen> {
       if (servicesData != null && servicesData.docs.isNotEmpty) {
         setState(() {
           secondServices = servicesData.docs;
-          isservicesPrinsipalesLoading = false;
+          issecondServicesLoading = false;
         });
       } else {
         issecondServicesLoading = true;
@@ -293,58 +291,69 @@ class _WashScreenState extends State<WashScreen> {
                   children: [
                     // the list that shows the mainservices  ++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-                    Column(
-                      children: List.generate(
-                        servicesPrinsipales.length,
-                        (index) => Card(
-                          elevation: 5,
-                          child: InkWell(
-                            onTap: () {
-                              final int servicePrix = servicesPrinsipales[index]
-                                      ['prix'] is int
-                                  ? servicesPrinsipales[index]['prix']
-                                  : int.parse(servicesPrinsipales[index]['prix']
-                                      .toString());
+                    isservicesPrinsipalesLoading
+                        ? const Center(
+                            child: CircularProgressIndicator(),
+                          )
+                        : Column(
+                            children: List.generate(
+                              servicesPrinsipales.length,
+                              (index) => Card(
+                                elevation: 5,
+                                child: InkWell(
+                                  onTap: () {
+                                    final int servicePrix =
+                                        servicesPrinsipales[index]['prix']
+                                                is int
+                                            ? servicesPrinsipales[index]['prix']
+                                            : int.parse(
+                                                servicesPrinsipales[index]
+                                                        ['prix']
+                                                    .toString());
 
-                              if (selectedServices
-                                  .contains(servicesPrinsipales[index])) {
-                                selectedServices
-                                    .remove(servicesPrinsipales[index]);
+                                    if (selectedServices
+                                        .contains(servicesPrinsipales[index])) {
+                                      selectedServices
+                                          .remove(servicesPrinsipales[index]);
 
-                                prix -= servicePrix;
-                              } else {
-                                selectedServices
-                                    .add(servicesPrinsipales[index]);
+                                      prix -= servicePrix;
+                                    } else {
+                                      selectedServices
+                                          .add(servicesPrinsipales[index]);
 
-                                prix += servicePrix;
-                              }
-                              setState(() {});
-                            },
-                            child: ListTile(
-                              leading: const Icon(Icons.cleaning_services,
-                                  color: Color.fromARGB(238, 129, 1, 164)),
-                              title: Text(
-                                "${servicesPrinsipales[index]['fr_titel']}",
-                                style: const TextStyle(
-                                    fontSize: 13, fontWeight: FontWeight.bold),
+                                      prix += servicePrix;
+                                    }
+                                    setState(() {});
+                                  },
+                                  child: ListTile(
+                                    leading: const Icon(Icons.cleaning_services,
+                                        color:
+                                            Color.fromARGB(238, 129, 1, 164)),
+                                    title: Text(
+                                      "${servicesPrinsipales[index]['fr_titel']}",
+                                      style: const TextStyle(
+                                          fontSize: 13,
+                                          fontWeight: FontWeight.bold),
+                                    ),
+                                    subtitle: Text(
+                                      '${servicesPrinsipales[index]['prix']} \$',
+                                      style: const TextStyle(
+                                          color: Colors.green, fontSize: 12.0),
+                                    ),
+                                    trailing: selectedServices.contains(
+                                            servicesPrinsipales[index])
+                                        ? const Icon(
+                                            Icons.check_box,
+                                            color: Color.fromARGB(
+                                                238, 129, 1, 164),
+                                          )
+                                        : const Icon(
+                                            Icons.check_box_outline_blank),
+                                  ),
+                                ),
                               ),
-                              subtitle: Text(
-                                '${servicesPrinsipales[index]['prix']} \$',
-                                style: const TextStyle(
-                                    color: Colors.green, fontSize: 12.0),
-                              ),
-                              trailing: selectedServices
-                                      .contains(servicesPrinsipales[index])
-                                  ? const Icon(
-                                      Icons.check_box,
-                                      color: Color.fromARGB(238, 129, 1, 164),
-                                    )
-                                  : const Icon(Icons.check_box_outline_blank),
                             ),
                           ),
-                        ),
-                      ),
-                    ),
 
                     const SizedBox(height: 60),
 
@@ -376,54 +385,64 @@ class _WashScreenState extends State<WashScreen> {
                       ],
                     ),
                     const SizedBox(height: 10),
-
-                    Column(
-                      children: List.generate(
-                        secondServices.length,
-                        (index) => Card(
-                          elevation: 5,
-                          child: InkWell(
-                            onTap: () {
-                              final int servicePrix = secondServices[index]
-                                      ['prix'] is int
-                                  ? secondServices[index]['prix']
-                                  : int.parse(
-                                      secondServices[index]['prix'].toString());
-                              if (selectedServices
-                                  .contains(secondServices[index])) {
-                                selectedServices.remove(secondServices[index]);
-                                prix -= servicePrix;
-                              } else {
-                                selectedServices.add(secondServices[index]);
-                                prix += servicePrix;
-                              }
-                              setState(() {});
-                            },
-                            child: ListTile(
-                              leading: const Icon(Icons.cleaning_services,
-                                  color: Color.fromARGB(238, 129, 1, 164)),
-                              title: Text(
-                                "${secondServices[index]['fr_titel']}",
-                                style: const TextStyle(
-                                    fontSize: 13, fontWeight: FontWeight.bold),
+                    issecondServicesLoading
+                        ? const Center(
+                            child: CircularProgressIndicator(),
+                          )
+                        : Column(
+                            children: List.generate(
+                              secondServices.length,
+                              (index) => Card(
+                                elevation: 5,
+                                child: InkWell(
+                                  onTap: () {
+                                    final int servicePrix =
+                                        secondServices[index]['prix'] is int
+                                            ? secondServices[index]['prix']
+                                            : int.parse(secondServices[index]
+                                                    ['prix']
+                                                .toString());
+                                    if (selectedServices
+                                        .contains(secondServices[index])) {
+                                      selectedServices
+                                          .remove(secondServices[index]);
+                                      prix -= servicePrix;
+                                    } else {
+                                      selectedServices
+                                          .add(secondServices[index]);
+                                      prix += servicePrix;
+                                    }
+                                    setState(() {});
+                                  },
+                                  child: ListTile(
+                                    leading: const Icon(Icons.cleaning_services,
+                                        color:
+                                            Color.fromARGB(238, 129, 1, 164)),
+                                    title: Text(
+                                      "${secondServices[index]['fr_titel']}",
+                                      style: const TextStyle(
+                                          fontSize: 13,
+                                          fontWeight: FontWeight.bold),
+                                    ),
+                                    subtitle: Text(
+                                      '${secondServices[index]['prix']} \$',
+                                      style: const TextStyle(
+                                          color: Colors.green, fontSize: 12.0),
+                                    ),
+                                    trailing: selectedServices
+                                            .contains(secondServices[index])
+                                        ? const Icon(
+                                            Icons.check_box,
+                                            color: Color.fromARGB(
+                                                238, 129, 1, 164),
+                                          )
+                                        : const Icon(
+                                            Icons.check_box_outline_blank),
+                                  ),
+                                ),
                               ),
-                              subtitle: Text(
-                                '${secondServices[index]['prix']} \$',
-                                style: const TextStyle(
-                                    color: Colors.green, fontSize: 12.0),
-                              ),
-                              trailing: selectedServices
-                                      .contains(secondServices[index])
-                                  ? const Icon(
-                                      Icons.check_box,
-                                      color: Color.fromARGB(238, 129, 1, 164),
-                                    )
-                                  : const Icon(Icons.check_box_outline_blank),
                             ),
                           ),
-                        ),
-                      ),
-                    ),
 
                     const SizedBox(height: 10),
 

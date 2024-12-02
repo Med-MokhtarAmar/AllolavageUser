@@ -56,23 +56,21 @@ class _CarScreenState extends State<CarScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-                centerTitle: true,
+        centerTitle: true,
         automaticallyImplyLeading: false, // Hides the back button
         title: const Text('Ma Voiture'),
         backgroundColor: const Color.fromARGB(220, 35, 102, 195),
         shadowColor: Colors.black,
         elevation: 10,
         titleTextStyle: const TextStyle(color: Color(0xF1FFFFFF), fontSize: 18),
- 
       ),
-      body: 
-      Column(
+      body: Column(
         children: [
           const SizedBox(height: 20),
           Expanded(
             child: GetBuilder<Servicecontroller>(builder: (controller) {
               if (controller.mycars.isEmpty) {
-                return const Center(child: CircularProgressIndicator());
+                return const Center(child: Text(" il n'ya pas des voiuteurs"));
               } else {
                 return ListView.builder(
                   itemCount: carsController.mycars.length,
@@ -82,7 +80,7 @@ class _CarScreenState extends State<CarScreen> {
                     return GestureDetector(
                       onTap: () {
                         Get.to(() => WashScreen(
-                          carId:car['id'] ?? '' ,
+                            carId: car['id'] ?? '',
                             nom: car['mark'] ?? '',
                             matricule: car['Numero'] ?? '',
                             tel: car['phone'] ?? ' ? ',
@@ -207,15 +205,6 @@ class _CarScreenState extends State<CarScreen> {
           ),
         ],
       ),
-     
-     
-     
-     
-     
-     
-     
-     
-     
       floatingActionButton: Padding(
         padding: const EdgeInsets.only(bottom: 10.0),
         child: FloatingActionButton(

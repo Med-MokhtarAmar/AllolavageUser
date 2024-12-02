@@ -1,29 +1,88 @@
 // ignore_for_file: avoid_print
 
+import 'package:allolavage/EntryPoint.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:timezone/timezone.dart' as tz;
+import 'dart:convert'; // For utf8.encode
+import 'package:crypto/crypto.dart'; // For sha256
 
 class Servicecontroller extends GetxController {
+  bool isCarsEmpty = false;
+  bool isdemandsEmpty = false;
+  bool isMainservicesEmpty = false;
+  bool isMainservicesloading = false;
+  Map<String, String> userdata = {};
   List<Map<String, String>> mycars = [];
-  List<Map<String, String>> mainServices = [];
-  List<Map<String, String>> myDemands = [];
+  List<Map<String, dynamic>> mainServices = [];
+  List<Map<String, dynamic>> myDemands = [];
   late SharedPreferences prefs;
-  String idUser = "";
+  String? idUser;
+  String? userAdress;
+  String? userPhone;
+  String? userName;
   Future<void> loadSharedPreferences() async {
-    prefs = await SharedPreferences.getInstance();
-    idUser = prefs.getString('key') ?? "";
-    update();
+    try {
+      prefs = await SharedPreferences.getInstance();
+      idUser = prefs.getString('idUser') ?? "";
+      print("connected user is $idUser ");
+      update();
+    } catch (e) {
+      print("we can get the id user fron prefs +++++++++++++++++++++++++++");
+    }
+  }
+
+  Future<void> loadUserData() async {
+    try {
+      prefs = await SharedPreferences.getInstance();
+      userAdress = prefs.getString('userAdress') ?? "no adress";
+      userPhone = prefs.getString('userPhone') ?? "no phone";
+      userName = prefs.getString('userName') ?? "no name";
+      print("connected user is $userName $userPhone $userAdress ");
+      update();
+    } catch (e) {
+      print("we can get the id user fron prefs +++++++++++++++++++++++++++");
+    }
   }
 
   Future<void> saveToPreferences(String value) async {
-    await prefs.setString('key', value);
-    idUser = value;
-    loadSharedPreferences();
+    try {
+      await prefs.setString('idUser', value);
+      // idUser = value;
+      loadSharedPreferences();
+    } catch (e) {}
+  }
+
+  Future<void> deleteFromPreferences() async {
+    try {
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      await prefs.remove('idUser'); // Deletes the 'idUser' key
+    } catch (e) {
+      print("Error deleting from preferences: $e");
+    }
+  }
+
+  Future<bool> checkIfIdUserExists() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? idUser = prefs.getString('idUser');
+    return idUser != null &&
+        idUser.isNotEmpty; // Check if idUser is not null or empty
+  }
+
+  Future<void> saveUserdataToPreferences(
+    String name,
+    String phone,
+    String adress,
+  ) async {
+    try {
+      await prefs.setString('userAdress', adress);
+      await prefs.setString('userPhone', phone);
+      await prefs.setString('userName', name);
+      loadUserData();
+    } catch (e) {}
   }
 
   Future<void> getCarsData() async {
@@ -34,7 +93,8 @@ class Servicecontroller extends GetxController {
           FirebaseFirestore.instance.collection('cars');
 
       // Get the data from Firestore
-      QuerySnapshot querySnapshot = await carsCollection.get();
+      QuerySnapshot querySnapshot =
+          await carsCollection.where("iduser", isEqualTo: idUser).get();
 
       // Clear the list to avoid duplicates
       mycars.clear();
@@ -58,6 +118,62 @@ class Servicecontroller extends GetxController {
     }
   }
 
+  Future<void> login(String tel, String pwd) async {
+    String hashpwd =
+        hash(pwd); // Assuming `hash` method is implemented for hashing
+    try {
+      // Reference the Firestore collection
+      CollectionReference usersCollection =
+          FirebaseFirestore.instance.collection('users');
+
+      // Get the data from Firestore where the phone number matches
+      QuerySnapshot querySnapshot =
+          await usersCollection.where('phone', isEqualTo: tel).get();
+
+      if (querySnapshot.docs.isEmpty) {
+        // Show snackbar if user doesn't exist
+        Get.snackbar("User not found", "The phone number $tel does not exist");
+      } else {
+        // Get the password field from the document and check if it matches
+        String storedPassword = querySnapshot.docs[0].get('password');
+
+        if (storedPassword == hashpwd) {
+          // Proceed to load shared preferences (you can pass user data here)
+          saveToPreferences(querySnapshot.docs[0].id);
+          saveUserdataToPreferences(
+              querySnapshot.docs[0]['name'] ?? " no name",
+              querySnapshot.docs[0]['phone'] ?? " ",
+              querySnapshot.docs[0]['adress'] ?? " ");
+          // Get.off(() => Entrypoint());
+          loadSharedPreferences();
+
+          Get.off(() => Entrypoint());
+
+          update();
+        } else {
+          // If the passwords don't match, show an error message
+          Get.snackbar(
+              "Incorrect password", "The entered password is incorrect");
+        }
+      }
+
+      print("Login attempt completed");
+    } catch (e) {
+      print("Error during login: $e");
+    }
+  }
+
+  String hash(String input) {
+    // Convert the input string to bytes
+    List<int> bytes = utf8.encode(input);
+
+    // Hash the input using SHA-1
+    Digest sha1Hash = sha1.convert(bytes);
+
+    // Return the hexadecimal representation of the hash
+    return sha1Hash.toString();
+  }
+
   Future<void> getDemandsData() async {
     print("Fetching demands data...");
     try {
@@ -66,7 +182,8 @@ class Servicecontroller extends GetxController {
           FirebaseFirestore.instance.collection('demands');
 
       // Get the data from Firestore
-      QuerySnapshot querySnapshot = await demandsCollection.get();
+      QuerySnapshot querySnapshot =
+          await demandsCollection.where('idUser', isEqualTo: idUser).get();
 
       // Clear the list to avoid duplicates
       myDemands.clear();
@@ -75,24 +192,28 @@ class Servicecontroller extends GetxController {
       for (var doc in querySnapshot.docs) {
         myDemands.add({
           "id": doc.id,
-          "model": doc["model"] ?? "",
-          "size": doc["size"] ?? "",
-          "phone": doc["phone"] ?? "",
-          "carNumero": doc["carNumero"] ?? "",
-          "gpsLocation": doc["gpsLocation"] ?? "",
+          "model": doc["model"].toString(),
+          "size": doc["size"].toString(),
+          "phone": doc["phone"].toString(),
+          "carNumero": doc["carNumero"].toString(),
           "carId": doc["carId"] ?? "",
-          "prix": doc["prix"].toString() ?? "",
-          "bookingTime": doc["bookingTime"]?.toDate() ??
-              null, // Converts Firestore Timestamp to DateTime
-          "isDone": doc["isDone"] ?? false,
-          "isCanceld": doc["isCanceld"] ?? false,
-          "canceldBy": doc["canceldBy"] ?? "",
-          "Moughataa": doc["Moughataa"] ?? "",
-          "DoneBy": doc["DoneBy"] ?? "",
-          "createdAt": doc["createdAt"]?.toDate() ??
-              null, // Converts Firestore Timestamp to DateTime
-        }); 
+          "prix": doc["prix"].toString(),
+          "bookingTime": doc["bookingTime"]
+              .toString(), // Converts Firestore Timestamp to DateTime
+          "isDone": doc["isDone"].toString(),
+          "isCanceld": doc["isCanceld"].toString(),
+          "canceldBy": doc["canceldBy"].toString(),
+          "Moughataa": doc["Moughataa"].toString(),
+          "selectedServices": doc["selectedServices"],
+          "DoneBy": doc["DoneBy"].toString(),
+          "createdAt": doc["createdAt"]
+              ?.toDate() // Converts Firestore Timestamp to DateTime
+        });
+        isdemandsEmpty = false;
       }
+      print(
+          " nombre du demande ${myDemands.length} / ${querySnapshot.docs.length} ");
+      if (querySnapshot.docs.isEmpty) isdemandsEmpty = true;
 
       // Notify listeners or update UI
       update();
@@ -125,7 +246,7 @@ class Servicecontroller extends GetxController {
           "model": doc["model"] ?? "",
           "fr_titel": doc["fr_titel"] ?? "",
           "ar_titel": doc["ar_titel"] ?? "",
-          "prix": doc["prix"].toString() ?? "0",
+          "prix": doc["prix"].toString(),
           "image": doc["image"] ?? "",
         });
       }
@@ -134,33 +255,35 @@ class Servicecontroller extends GetxController {
       // "image": "media/usersimages/logo.png",
       // "prix": 1000,
       update();
-      print("Cars data fetched successfully: $mainServices");
+      // print("Cars data fetched successfully: ");
     } catch (e) {
       print("Error fetching car data: $e");
     }
   }
 
-  Future<QuerySnapshot?> getMainServicesDataByCar({String? carId}) async {
+  Future<QuerySnapshot?> getMainServicesDataByCar(String size) async {
     try {
       // Reference the Firestore collection
       CollectionReference carsCollection =
           FirebaseFirestore.instance.collection('mainservices');
 
-      print("Getting the data of mainservices...");
+      isMainservicesloading = true;
+      update();
 
-      // Filter the query if carId is provided
       Query query = carsCollection;
-      if (carId != null) {
-        query = query.where('carId', isEqualTo: carId);
-      }
 
-      QuerySnapshot querySnapshot = await query.get();
+      QuerySnapshot querySnapshot =
+          await query.where('size', isEqualTo: size).get();
 
       print(
           "Data fetched successfully: ${querySnapshot.docs.length} documents");
+      isMainservicesloading = false;
+      update();
       return querySnapshot;
     } catch (e) {
       print("Error fetching car data: $e");
+      isMainservicesloading = false;
+      update();
       return null;
     }
   }
@@ -244,6 +367,7 @@ class Servicecontroller extends GetxController {
         'model': model,
         'size': size,
         'phone': phone,
+        "idUser": idUser,
         'carNumero': numero,
         'gpsLocation': gpsLocation,
         'carId': carId,
@@ -272,7 +396,7 @@ class Servicecontroller extends GetxController {
       await FirebaseFirestore.instance.collection('demands').add(demandData);
 
       // Call method to refresh or update data
-      getCarsData();
+      getDemandsData();
       update(); // If update is a method you want to trigger
 
       print('Demand created successfully'); // Better success logging
@@ -299,13 +423,22 @@ class Servicecontroller extends GetxController {
     }
   }
 
+  void loadAllData() async {
+    loadSharedPreferences();
+    loadUserData();
+    getCarsData();
+    getMainServicesData();
+    getDemandsData();
+  }
+
   @override
   void onInit() {
     // TODO: implement onInit
     super.onInit();
+    loadSharedPreferences();
+    loadUserData();
     getCarsData();
     getMainServicesData();
-    loadSharedPreferences();
     getDemandsData();
   }
 }

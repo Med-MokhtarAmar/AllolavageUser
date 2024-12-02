@@ -1,9 +1,17 @@
+import 'package:allolavage/screens/auth/login.dart';
+import 'package:allolavage/servicesControllers/serviceController.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart'; 
-import 'notification.dart'; 
+import 'package:get/get.dart';
+import 'notification.dart';
 
 class ProfilePage extends StatelessWidget {
-  const ProfilePage({Key? key}) : super(key: key);
+  ProfilePage({Key? key}) : super(key: key);
+  final Servicecontroller controller = Get.put(Servicecontroller());
+
+  void logout() {
+    controller.deleteFromPreferences();
+    Get.offAll(() => login());
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -35,27 +43,27 @@ class ProfilePage extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 20),
-              const Column(
+              Column(
                 children: [
                   Text(
-                    'Med Mokhtar',
-                    style: TextStyle(
+                    "${controller.userName ?? " "}",
+                    style: const TextStyle(
                       fontSize: 22,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
-                  SizedBox(height: 10),
+                  const SizedBox(height: 10),
                   Text(
-                    'Elvellouje',
-                    style: TextStyle(
+                    '${controller.userAdress ?? " "}',
+                    style: const TextStyle(
                       fontSize: 20,
                       color: Colors.grey,
                     ),
                   ),
-                  SizedBox(height: 10),
+                  const SizedBox(height: 10),
                   Text(
-                    '48682847',
-                    style: TextStyle(
+                    '${controller.userPhone ?? " "}',
+                    style: const TextStyle(
                       fontSize: 18,
                       color: Colors.grey,
                     ),
@@ -72,19 +80,23 @@ class ProfilePage extends StatelessWidget {
                       title: 'Language',
                       onTap: () => _showLanguageSelector(context),
                     ),
-                  ProfileOption(
+                    const ProfileOption(
                       icon: Icons.notifications,
                       title: 'Notifications',
-                      // onTap: () => Get.to(() => NotificationExample()), 
+                      // onTap: () => Get.to(() => NotificationExample()),
                     ),
-
                     const ProfileOption(
                       icon: Icons.share,
                       title: 'Partager',
                     ),
-                    const ProfileOption(
-                      icon: Icons.logout,
-                      title: 'Déconnexion',
+                    InkWell(
+                      onTap: () {
+                        logout();
+                      },
+                      child: const ProfileOption(
+                        icon: Icons.logout,
+                        title: 'Déconnexion',
+                      ),
                     ),
                   ],
                 ),
@@ -117,11 +129,12 @@ class ProfilePage extends StatelessWidget {
               leading: const Icon(Icons.language, color: Colors.blueAccent),
               title: const Text('Anglais'),
               onTap: () {
-                _changeLanguage(context, 'en'); 
+                _changeLanguage(context, 'en');
               },
             ),
             ListTile(
-              leading: const Icon(Icons.language, color:Color.fromARGB(238, 129, 1, 164)),
+              leading: const Icon(Icons.language,
+                  color: Color.fromARGB(238, 129, 1, 164)),
               title: const Text('Français'),
               onTap: () {
                 _changeLanguage(context, 'fr');
@@ -158,7 +171,8 @@ class ProfileOption extends StatelessWidget {
   final String title;
   final VoidCallback? onTap;
 
-  const ProfileOption({required this.icon, required this.title, this.onTap, Key? key})
+  const ProfileOption(
+      {required this.icon, required this.title, this.onTap, Key? key})
       : super(key: key);
 
   @override
