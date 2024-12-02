@@ -55,6 +55,7 @@ class _RegisterState extends State<Register> {
               sms: "123456",
               pwd: pwd.text,
               tel: tel.text,
+              name: name.text,
               adress: adress,
             ));
       },
@@ -64,6 +65,7 @@ class _RegisterState extends State<Register> {
         Get.to(() => Otp(
               sms: verificationId,
               pwd: pwd.text,
+              name: name.text,
               tel: tel.text,
               adress: adress,
             ));
@@ -101,8 +103,6 @@ class _RegisterState extends State<Register> {
   //     },
   //   );
   // }
-
- 
 
   @override
   void initState() {

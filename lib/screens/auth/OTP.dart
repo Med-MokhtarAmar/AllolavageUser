@@ -9,12 +9,14 @@ class Otp extends StatefulWidget {
   final String tel;
   final String adress;
   final String pwd;
+  final String name;
 
   // Constructor to accept the parameters
   const Otp({
     super.key,
     required this.sms,
     required this.tel,
+    required this.name,
     required this.adress,
     required this.pwd,
   });
@@ -32,7 +34,8 @@ class _OtpState extends State<Otp> {
         // Add user data to Firestore
         await FirebaseFirestore.instance.collection('users').add({
           "phone": widget.tel,
-          "password": controller.hash(widget.pwd) ,
+          "name": widget.name,
+          "password": controller.hash(widget.pwd),
           "adress": widget.adress,
           "isActive": true,
         });
